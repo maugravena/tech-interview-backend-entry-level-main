@@ -6,4 +6,8 @@ FactoryBot.define do
   trait :with_items do
     after(:create) { |cart| create_list(:cart_item, 2, cart: cart) }
   end
+
+  trait :abandoned do
+    last_interaction_at { Time.current - 3.hours }
+  end
 end
