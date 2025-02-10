@@ -2,6 +2,12 @@ class CartsController < ApplicationController
   before_action :load_cart, only: %w[add_items]
   ## TODO Escreva a lógica dos carrinhos aqui
 
+  def index
+    @cart = Cart.last
+
+    render json: cart_response(@cart)
+  end
+
   def add_items
     product = Product.find(params[:product_id])
 

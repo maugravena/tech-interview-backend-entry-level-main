@@ -1,9 +1,30 @@
 require 'rails_helper'
 
-RSpec.describe "/carts", type: :request do
+RSpec.describe '/carts', type: :request do
   pending "TODO: Escreva os testes de comportamento do controller de carrinho necessários para cobrir a sua implmentação #{__FILE__}"
 
-  describe "POST /add_items" do
+  describe 'GET /cart' do
+    let(:cart) { create(:cart, :with_items) }
+
+    it 'renders a successful response' do
+      cart
+      get carts_url
+
+      response_body = JSON.parse(response.body).deep_symbolize_keys
+      products = response_body[:products]
+
+      expect(response).to have_http_status(:ok)
+      expect(products.first[:name]).to eq('Test Product')
+      expect(products.first[:quantity]).to eq(1)
+      expect(products.first[:unit_price]).to eq(10.11)
+      expect(products.last[:name]).to eq('Test Product')
+      expect(products.last[:quantity]).to eq(1)
+      expect(products.first[:unit_price]).to eq(10.11)
+      expect(response_body[:total_price]).to eq(20.22)
+    end
+  end
+
+  describe 'POST /add_items' do
     let(:cart) { create(:cart) }
     let(:product) { create(:product) }
     let!(:cart_item) { create(:cart_item, cart: cart, product: product, quantity: 1) }
