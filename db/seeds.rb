@@ -23,3 +23,28 @@ Product.create([
     price: 999.99
   }
 ])
+
+Cart.create(
+  [
+    {
+      total_price: 10,
+      last_interaction_at: Time.current - 7.days
+    },
+    {
+      total_price: 100,
+      last_interaction_at: Time.current - 8.days
+    },
+    {
+      total_price: 200,
+      last_interaction_at: Time.current - 3.days
+    },
+    {
+      total_price: 300,
+      last_interaction_at: Time.current - 1.days
+    },
+    {
+      total_price: 400,
+      last_interaction_at: Time.current - 3.hours
+    }
+  ]
+)

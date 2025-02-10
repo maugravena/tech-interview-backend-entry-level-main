@@ -40,6 +40,21 @@ services:
     command: bundle exec rspec
     profiles: [test]
 
+  sidekiq:
+    container_name: sidekiq
+    build:
+      context: .
+      dockerfile: Dockerfile.dev
+    volumes:
+      - .:/rails
+    command: bundle exec sidekiq -q default
+    environment:
+      - DATABASE_URL=postgresql://postgres:password@db:5432/myapp_test
+      - REDIS_URL=redis://redis:6379/0
+    depends_on:
+      - db
+      - redis
+
 volumes:
     postgres13:
     redis_data:
