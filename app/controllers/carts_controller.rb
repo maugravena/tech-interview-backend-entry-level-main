@@ -8,6 +8,18 @@ class CartsController < ApplicationController
     render json: cart_response(@cart)
   end
 
+  def remove_product
+    @cart = Cart.last
+
+    if @cart.products.exists?(params[:product_id])
+      @cart.products.destroy(params[:product_id])
+
+      render json: cart_response(@cart)
+    else
+      render json: { error: 'Product not found' }, status: :not_found
+    end
+  end
+
   def add_items
     product = Product.find(params[:product_id])
 

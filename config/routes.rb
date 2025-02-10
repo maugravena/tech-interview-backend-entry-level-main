@@ -6,6 +6,7 @@ Rails.application.routes.draw do
   resources :carts, only: %w[index]
 
   post '/cart/add_items', to: 'carts#add_items'
+  delete '/cart/:product_id', to: 'carts#remove_product'
 
   get "up" => "rails/health#show", as: :rails_health_check
 

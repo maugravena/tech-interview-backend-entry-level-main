@@ -1,8 +1,6 @@
 require 'rails_helper'
 
 RSpec.describe '/carts', type: :request do
-  pending "TODO: Escreva os testes de comportamento do controller de carrinho necessários para cobrir a sua implmentação #{__FILE__}"
-
   describe 'GET /cart' do
     let(:cart) { create(:cart, :with_items) }
 
@@ -80,6 +78,27 @@ RSpec.describe '/carts', type: :request do
       }
 
       expect(JSON.parse(response.body).deep_symbolize_keys).to eq(expected_response)
+    end
+  end
+
+  describe 'DELETE /cart/:product_id' do
+    let(:cart) { create(:cart, :with_items) }
+
+    it 'destroys the requested cart product' do
+      expect do
+        delete "/cart/#{cart.products.last.id}"
+      end.to change(cart.products, :count).by(-1)
+    end
+
+    context "when 'can\'t find the product in cart" do
+      it 'destroys the requested cart product' do
+        cart
+
+        delete '/cart/abc123'
+
+        expect(response).to have_http_status(:not_found)
+        expect(JSON.parse(response.body)).to eq({ 'error' => 'Product not found' })
+      end
     end
   end
 end
