@@ -20,5 +20,45 @@ RSpec.describe "/carts", type: :request do
         expect { subject }.to change { cart_item.reload.quantity }.by(2)
       end
     end
+
+    context 'when has differents kinds of products' do
+      subject do
+        post '/cart/add_items', params: { product_id: product.id, quantity: 1 }, as: :json
+        post '/cart/add_items', params: { product_id: tshirt.id, quantity: 1 }, as: :json
+      end
+
+      let(:tshirt) { create(:product, name: 'T-shirt', price: 50) }
+
+      it 'returns the sum of all cart items -> cart total_price' do
+        allow_any_instance_of(CartsController).to receive(:session) { { cart_id: cart.id } }
+
+        subject
+        body = JSON.parse(response.body).deep_symbolize_keys
+
+        expect(body[:total_price]).to eq(70.22)
+      end
+    end
+
+    it 'returns attributes in the json body' do
+      allow_any_instance_of(CartsController).to receive(:session) { { cart_id: cart.id } }
+
+      post '/cart/add_items', params: { product_id: product.id, quantity: 2 }, as: :json
+
+      expected_response = {
+        id: cart.id,
+        products: [
+          {
+            id: product.id,
+            name: product.name,
+            quantity: 3,
+            unit_price: product.price.round(2).to_f,
+            total_price: (product.price * 3).round(2).to_f
+          }
+        ],
+        total_price: 30.33
+      }
+
+      expect(JSON.parse(response.body).deep_symbolize_keys).to eq(expected_response)
+    end
   end
 end
