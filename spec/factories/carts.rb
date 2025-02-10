@@ -10,4 +10,8 @@ FactoryBot.define do
   trait :abandoned do
     last_interaction_at { Time.current - 3.hours }
   end
+
+  trait :abandoned_seven_days do
+    last_interaction_at { Time.current - 7.days }
+  end
 end

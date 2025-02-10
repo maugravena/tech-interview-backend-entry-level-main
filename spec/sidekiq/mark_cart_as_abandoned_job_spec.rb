@@ -6,10 +6,18 @@ RSpec.describe MarkCartAsAbandonedJob, type: :job do
   subject(:job) { described_class.new }
 
   describe '#perform' do
-    it 'calls the service' do
+    it 'calls the AbandonedCartsMarker service' do
       expect(AbandonedCartsMarker).to receive(:new).and_call_original
 
       expect_any_instance_of(AbandonedCartsMarker).to receive(:call)
+
+      job.perform
+    end
+
+    it 'calls the AbandonedCartsRemover service' do
+      expect(AbandonedCartsRemover).to receive(:new).and_call_original
+
+      expect_any_instance_of(AbandonedCartsRemover).to receive(:call)
 
       job.perform
     end
