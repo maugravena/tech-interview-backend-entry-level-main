@@ -1,8 +1,8 @@
 class CartsController < ApplicationController
-  before_action :load_cart, only: %w[add_items]
+  before_action :load_cart, only: %w[add_item]
   ## TODO Escreva a lógica dos carrinhos aqui
 
-  def index
+  def show
     @cart = Cart.last
 
     render json: cart_response(@cart)
@@ -11,8 +11,8 @@ class CartsController < ApplicationController
   def remove_product
     @cart = Cart.last
 
-    if @cart.products.exists?(params[:product_id])
-      @cart.products.destroy(params[:product_id])
+    if @cart.products.exists?(cart_params[:product_id])
+      @cart.products.destroy(cart_params[:product_id])
 
       render json: cart_response(@cart)
     else
@@ -20,17 +20,21 @@ class CartsController < ApplicationController
     end
   end
 
-  def add_items
-    product = Product.find(params[:product_id])
+  def add_item
+    product = Product.find(cart_params[:product_id])
 
     @cart_item = @cart.cart_items.find_or_create_by(product: product)
-    @cart_item.quantity += params[:quantity]
+    @cart_item.quantity += cart_params[:quantity]
     @cart_item.save
 
     render json: cart_response(@cart)
   end
 
   private
+
+  def cart_params
+    params.permit(:product_id, :quantity)
+  end
 
   def load_cart
     cart_id = session[:cart_id]
