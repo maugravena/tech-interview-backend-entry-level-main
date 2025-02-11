@@ -1,6 +1,5 @@
 class CartsController < ApplicationController
   before_action :load_cart, only: %w[add_item]
-  ## TODO Escreva a lógica dos carrinhos aqui
 
   def show
     @cart = Cart.last
