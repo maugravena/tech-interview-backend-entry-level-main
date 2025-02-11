@@ -227,3 +227,4 @@ O código com todas as features solicitadas estão na branch *create_abandoned_c
 2. docker-compose run --rm web bin/rails db:create
 3. docker-compose run --rm web bin/rails db:migrate
 4. docker-compose run --rm web bin/rails db:seed (OBS: necessário para verificar o funcionamento da funcionalidade do Job)
+5. docker-compose up
