@@ -27,23 +27,23 @@ Product.create([
 Cart.create(
   [
     {
-      total_price: 10,
+      total_price: 0,
       last_interaction_at: Time.current - 7.days
     },
     {
-      total_price: 100,
+      total_price: 0,
       last_interaction_at: Time.current - 8.days
     },
     {
-      total_price: 200,
+      total_price: 0,
       last_interaction_at: Time.current - 3.days
     },
     {
-      total_price: 300,
+      total_price: 0,
       last_interaction_at: Time.current - 1.days
     },
     {
-      total_price: 400,
+      total_price: 0,
       last_interaction_at: Time.current - 3.hours
     }
   ]
