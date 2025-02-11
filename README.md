@@ -216,3 +216,14 @@ bundle exec rspec
 
 ### Como enviar seu projeto
 Salve seu código em um versionador de código (GitHub, GitLab, Bitbucket) e nos envie o link publico. Se achar necessário, informe no README as instruções para execução ou qualquer outra informação relevante para correção/entendimento da sua solução.
+
+## Resolução do Desafio Técnico - Backend
+
+O código com todas as features solicitadas estão na branch *create_abandoned_carts_job*.
+
+### Como rodar o projeto com docker?
+
+1. docker-compose build
+2. docker-compose run --rm web bin/rails db:create
+3. docker-compose run --rm web bin/rails db:migrate
+4. docker-compose run --rm web bin/rails db:seed (OBS: necessário para verificar o funcionamento da funcionalidade do Job)

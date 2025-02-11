@@ -37,8 +37,7 @@ RSpec.describe '/carts', type: :request do
       end
 
       it 'renders a JSON response with the new cart' do
-        post '/cart',
-             params: valid_attributes, as: :json
+        post '/cart', params: valid_attributes, as: :json
         expect(response).to have_http_status(:created)
         expect(response.content_type).to match(a_string_including('application/json'))
       end
@@ -59,8 +58,7 @@ RSpec.describe '/carts', type: :request do
       end
 
       it 'renders a JSON response with errors for the new product' do
-        post '/cart',
-             params: invalid_attributes, as: :json
+        post '/cart', params: invalid_attributes, as: :json
         expect(response).to have_http_status(:unprocessable_entity)
         expect(response.content_type).to match(a_string_including('application/json'))
       end
