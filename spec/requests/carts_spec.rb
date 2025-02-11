@@ -22,6 +22,51 @@ RSpec.describe '/carts', type: :request do
     end
   end
 
+  describe 'POST /create' do
+    let(:valid_attributes) do
+      {
+        total_price: 10
+      }
+    end
+
+    context 'with valid parameters' do
+      it 'creates a new Cart' do
+        expect do
+          post '/cart', params: valid_attributes, as: :json
+        end.to change(Cart, :count).by(1)
+      end
+
+      it 'renders a JSON response with the new cart' do
+        post '/cart',
+             params: valid_attributes, as: :json
+        expect(response).to have_http_status(:created)
+        expect(response.content_type).to match(a_string_including('application/json'))
+      end
+    end
+
+    context 'with invalid parameters' do
+      let(:invalid_attributes) do
+        {
+          total_price: -1
+        }
+      end
+
+      it 'does not create a new Cart' do
+        expect do
+          post '/cart',
+               params: invalid_attributes, as: :json
+        end.to change(Product, :count).by(0)
+      end
+
+      it 'renders a JSON response with errors for the new product' do
+        post '/cart',
+             params: invalid_attributes, as: :json
+        expect(response).to have_http_status(:unprocessable_entity)
+        expect(response.content_type).to match(a_string_including('application/json'))
+      end
+    end
+  end
+
   describe 'POST /add_item' do
     let(:cart) { create(:cart) }
     let(:product) { create(:product) }
@@ -29,8 +74,8 @@ RSpec.describe '/carts', type: :request do
 
     context 'when the product already is in the cart' do
       subject do
-        post '/cart/add_item', params: { product_id: product.id, quantity: 1 }, as: :json
-        post '/cart/add_item', params: { product_id: product.id, quantity: 1 }, as: :json
+        post '/cart/add_item', params: { product: { product_id: product.id, quantity: 1 } }, as: :json
+        post '/cart/add_item', params: { product: { product_id: product.id, quantity: 1 } }, as: :json
       end
 
       it 'updates the quantity of the existing item in the cart' do
@@ -42,8 +87,8 @@ RSpec.describe '/carts', type: :request do
 
     context 'when has differents kinds of products' do
       subject do
-        post '/cart/add_item', params: { product_id: product.id, quantity: 1 }, as: :json
-        post '/cart/add_item', params: { product_id: tshirt.id, quantity: 1 }, as: :json
+        post '/cart/add_item', params: { product: { product_id: product.id, quantity: 1 } }, as: :json
+        post '/cart/add_item', params: { product: { product_id: tshirt.id, quantity: 1 } }, as: :json
       end
 
       let(:tshirt) { create(:product, name: 'T-shirt', price: 50) }
@@ -52,6 +97,7 @@ RSpec.describe '/carts', type: :request do
         allow_any_instance_of(CartsController).to receive(:session) { { cart_id: cart.id } }
 
         subject
+
         body = JSON.parse(response.body).deep_symbolize_keys
 
         expect(body[:total_price]).to eq(70.22)
@@ -61,7 +107,7 @@ RSpec.describe '/carts', type: :request do
     it 'returns attributes in the json body' do
       allow_any_instance_of(CartsController).to receive(:session) { { cart_id: cart.id } }
 
-      post '/cart/add_item', params: { product_id: product.id, quantity: 2 }, as: :json
+      post '/cart/add_item', params: { product: { product_id: product.id, quantity: 2 } }, as: :json
 
       expected_response = {
         id: cart.id,

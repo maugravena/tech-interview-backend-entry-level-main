@@ -8,6 +8,16 @@ class CartsController < ApplicationController
     render json: cart_response(@cart)
   end
 
+  def create
+    @cart = Cart.new(cart_params)
+
+    if @cart.save
+      render json: @cart, status: :created, location: @cart
+    else
+      render json: @cart.errors, status: :unprocessable_entity
+    end
+  end
+
   def remove_product
     @cart = Cart.last
 
@@ -21,10 +31,10 @@ class CartsController < ApplicationController
   end
 
   def add_item
-    product = Product.find(cart_params[:product_id])
+    @product = Product.find(cart_params[:product][:product_id])
 
-    @cart_item = @cart.cart_items.find_or_create_by(product: product)
-    @cart_item.quantity += cart_params[:quantity]
+    @cart_item = @cart.cart_items.find_or_create_by(product: @product)
+    @cart_item.quantity += cart_params[:product][:quantity]
     @cart_item.save
 
     render json: cart_response(@cart)
@@ -33,7 +43,7 @@ class CartsController < ApplicationController
   private
 
   def cart_params
-    params.permit(:product_id, :quantity)
+    params.permit(:total_price, :product_id, product: %i[quantity product_id])
   end
 
   def load_cart
